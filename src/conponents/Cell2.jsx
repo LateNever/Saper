@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { ReactComponent as Bomb } from '../img/bomb.svg'
-import styles from './Cell.module.css'
+import styles from './Cell2.module.css'
 
-function Cell({ value, cellNum, mine, isVisible }) {
+function Cell({ value, mine, isVisible }) {
   const [visible, setVisible] = useState(isVisible)
-  console.log(cellNum)
+  // console.log(cellNum)
   return (
     <div
       className={styles.cell}

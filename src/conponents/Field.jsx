@@ -37,6 +37,8 @@ function Field({ size }) {
     inc(x - 1, y - 1)
   }
 
+  const openCell = (cell) => {}
+
   return (
     <div>
       <h1>Hello World!</h1>
@@ -44,10 +46,16 @@ function Field({ size }) {
         return (
           <div key={y} className={styles.string}>
             {fieldSize.map((cell, x) => {
+              console.log(y * size + x)
               return (
-                <div key={x} /*className={styles.cell}*/>
+                <div key={y * size + x} /*className={styles.cell}*/>
                   {/* {field[y * size + x]} */}
-                  <Cell value={field[y * size + x]} mine={mine} />
+                  <Cell
+                    value={field[y * size + x]}
+                    cellNum={y * size + x}
+                    mine={mine}
+                    isVisible={false}
+                  />
                 </div>
               )
             })}
