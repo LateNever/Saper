@@ -12,16 +12,58 @@ function Field2({ width, height, mineAmt }) {
   const mine = -1
 
   const [field, setField] = useState(
-    new Array(width * height).fill({ value: 0, visible: false })
+    new Array(width * height).fill({ value: 0, visible: true })
   )
 
-  // const changeAround = (cellNum, mod) => {
-  //   const x = Math.ceil(cellNum / width)
-  //   console.log(x)
-  //   // let fieldMod = [...field]
+  const changeAround = (fieldIn, cellNum, mod) => {
+    // console.log(cellNum)
+    // console.log(fieldIn)
 
-  //   // if (cellNum > 0) {mod(fieldMod[cellNum - 1])}
-  // }
+    let fieldMod = [...fieldIn]
+
+    const x = (cellNum % width) - 1
+    const y = Math.ceil(cellNum / width - 1)
+
+    const modFunc = (x, y) => {
+      if (x >= 0 && x < width && y >= 0 && y < height) {
+        // console.log(y * width + x)
+        mod(fieldMod[y * width + x])
+
+        fieldMod = fieldMod.map((cell, item) => {
+          return item === y * width + x
+            ? mod(fieldMod[y * width + x])
+            : { ...cell }
+        })
+      }
+    }
+
+    // modFunc(fieldMod[(x + 1, y)])
+    // modFunc(fieldMod[(x - 1, y)])
+    // modFunc(fieldMod[(x, y + 1)])
+    // modFunc(fieldMod[(x, y - 1)])
+    // modFunc(fieldMod[(x + 1, y + 1)])
+    // modFunc(fieldMod[(x - 1, y + 1)])
+    // modFunc(fieldMod[(x + 1, y - 1)])
+    // modFunc(fieldMod[(x - 1, y - 1)])
+
+    modFunc(x + 1, y)
+    modFunc(x - 1, y)
+    modFunc(x, y + 1)
+    modFunc(x, y - 1)
+    modFunc(x + 1, y + 1)
+    modFunc(x - 1, y + 1)
+    modFunc(x + 1, y - 1)
+    modFunc(x - 1, y - 1)
+
+    return [...fieldMod]
+
+    // if (cellNum > 0) {mod(fieldMod[cellNum - 1])}
+  }
+
+  // const x = 1 % width
+  // const y = Math.ceil(1 / width)
+  // console.log(x)
+  // console.log(y)
 
   // changeAround(6)
 
@@ -48,11 +90,20 @@ function Field2({ width, height, mineAmt }) {
     for (let i = 0; i < mineAmt; ) {
       const x = Math.floor(Math.random() * width)
       const y = Math.floor(Math.random() * height)
-      // console.log('hi')
+      // console.log(y * width + x)
       if (fieldBomb[y * width + x].value === mine) continue
       fieldBomb = fieldBomb.map((cell, item) => {
         return item === y * width + x ? { ...cell, value: mine } : { ...cell }
       })
+
+      const inc = (cell) => {
+        // console.log(cell.value)
+        return cell.value === mine
+          ? { ...cell }
+          : { ...cell, value: cell.value + 1 }
+      }
+
+      fieldBomb = changeAround(fieldBomb, y * width + x + 1, inc)
 
       i++
     }
