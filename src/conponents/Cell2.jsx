@@ -2,15 +2,34 @@ import { useState } from 'react'
 import { ReactComponent as Bomb } from '../img/bomb.svg'
 import styles from './Cell2.module.css'
 
-function Cell({ value, mine, isVisible }) {
-  const [visible, setVisible] = useState(isVisible)
+function Cell({
+  value,
+  cellNum,
+  mine,
+  visible,
+  openCell,
+  openZeroCell,
+  gameOver,
+}) {
+  // const [visible, setVisible] = useState(isVisible)
   // console.log(cellNum)
   return (
     <div
       className={styles.cell}
-      onClick={() => {
-        setVisible(true)
-      }}
+      onClick={
+        value === 0
+          ? () => {
+              // openCell(cellNum)
+              openZeroCell(cellNum)
+            }
+          : value === mine
+          ? () => {
+              gameOver(cellNum)
+            }
+          : () => {
+              openCell(cellNum)
+            }
+      }
     >
       {visible && (
         <div className={styles.openCell}>

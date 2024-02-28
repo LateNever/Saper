@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       {/* <Field size={5} /> */}
-      <Field2 width={5} height={6} mineAmt={4} />
+      <Field2 width={9} height={9} mineAmt={10} />
     </div>
   )
 }

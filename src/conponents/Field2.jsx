@@ -12,22 +12,26 @@ function Field2({ width, height, mineAmt }) {
   const mine = -1
 
   const [field, setField] = useState(
-    new Array(width * height).fill({ value: 0, visible: true })
+    new Array(width * height).fill({
+      value: 0,
+      visible: false,
+      isCheked: false,
+    })
   )
 
-  const changeAround = (fieldIn, cellNum, mod) => {
+  const changeAround = (fieldIn, cellNum, mod, self) => {
     // console.log(cellNum)
     // console.log(fieldIn)
 
     let fieldMod = [...fieldIn]
 
-    const x = (cellNum % width) - 1
-    const y = Math.ceil(cellNum / width - 1)
+    const x = cellNum % width
+    const y = Math.floor(cellNum / width)
 
     const modFunc = (x, y) => {
       if (x >= 0 && x < width && y >= 0 && y < height) {
         // console.log(y * width + x)
-        mod(fieldMod[y * width + x])
+        // mod(fieldMod[y * width + x])
 
         fieldMod = fieldMod.map((cell, item) => {
           return item === y * width + x
@@ -37,14 +41,9 @@ function Field2({ width, height, mineAmt }) {
       }
     }
 
-    // modFunc(fieldMod[(x + 1, y)])
-    // modFunc(fieldMod[(x - 1, y)])
-    // modFunc(fieldMod[(x, y + 1)])
-    // modFunc(fieldMod[(x, y - 1)])
-    // modFunc(fieldMod[(x + 1, y + 1)])
-    // modFunc(fieldMod[(x - 1, y + 1)])
-    // modFunc(fieldMod[(x + 1, y - 1)])
-    // modFunc(fieldMod[(x - 1, y - 1)])
+    fieldMod = fieldMod.map((cell, item) => {
+      return item === cellNum ? { ...cell, isCheked: true } : { ...cell }
+    })
 
     modFunc(x + 1, y)
     modFunc(x - 1, y)
@@ -55,34 +54,10 @@ function Field2({ width, height, mineAmt }) {
     modFunc(x + 1, y - 1)
     modFunc(x - 1, y - 1)
 
+    self && modFunc(x, y)
+
     return [...fieldMod]
-
-    // if (cellNum > 0) {mod(fieldMod[cellNum - 1])}
   }
-
-  // const x = 1 % width
-  // const y = Math.ceil(1 / width)
-  // console.log(x)
-  // console.log(y)
-
-  // changeAround(6)
-
-  // for (let i = 0; i < mineAmt; ) {
-  //   const x = Math.floor(Math.random() * width)
-  //   const y = Math.floor(Math.random() * height)
-
-  // console.log(field[2].visible)
-
-  // setField(
-  // const bombField = field.map((cell, item) => {
-  //   console.log({ ...cell })
-  //   return item === 2 ? { ...cell, value: mine } : { ...cell }
-  // })
-
-  // console.log(bombField)
-  // )
-
-  // console.log(field)
 
   useEffect(() => {
     let fieldBomb = [...field]
@@ -103,75 +78,72 @@ function Field2({ width, height, mineAmt }) {
           : { ...cell, value: cell.value + 1 }
       }
 
-      fieldBomb = changeAround(fieldBomb, y * width + x + 1, inc)
+      fieldBomb = changeAround(fieldBomb, y * width + x, inc)
 
       i++
     }
 
-    // console.log(fieldBomb)
-
     setField([...fieldBomb])
   }, [])
 
-  // console.log(fieldBomb)
+  const openCell = (cellNum) => {
+    setField(
+      field.map((cell, item) => {
+        return item === cellNum ? { ...cell, visible: true } : { ...cell }
+      })
+    )
+  }
 
-  // for (let i = 0; i < mineAmt; ) {
-  //   const x = Math.floor(Math.random() * width)
-  //   const y = Math.floor(Math.random() * height)
+  const show = (cell) => {
+    // console.log(cell.value)
+    return { ...cell, visible: true }
+  }
 
-  //   console.log(field[y * width + x])
+  const openZeroCell = (cellNum) => {
+    let zeroField = changeAround(field, cellNum, show, true)
 
-  //   if (field[y * width + x].value === mine) continue
+    // console.log(zeroField.includes({ value: 0, visible: true }))
+    // let obj = !!zeroField.find(
+    //   (item) => item.value === 0 && item.visible === true
+    // )
+    // console.log(obj)
 
-  //   field[y * width + x].value = mine
+    while (
+      !!zeroField.find(
+        (item) =>
+          item.value === 0 && item.visible === true && item.isCheked === false
+      )
+    ) {
+      zeroField.map((cell, item) => {
+        cell.value === 0 &&
+          cell.visible === true &&
+          (zeroField = changeAround(zeroField, item, show, true))
+      })
+    }
 
-  //   i++
-  // }
+    setField([...zeroField])
+  }
 
-  // console.log(field)
-
-  // setField()
-
-  // console.log(field[y * width + x].value)
-  // console.log(field[1].value)
-  // console.log(field[2].value)
-  // console.log(field[3].value)
-  // console.log(field[4].value)
-  // console.log(field[5].value)
-  // console.log(y * width + x)
-
-  // if (field[y * width + x].value === mine) continue
-
-  // field[y * width + x].value = mine
-
-  // i++
-
-  // inc(x + 1, y)
-  // inc(x - 1, y)
-  // inc(x, y + 1)
-  // inc(x, y - 1)
-  // inc(x + 1, y + 1)
-  // inc(x - 1, y + 1)
-  // inc(x + 1, y - 1)
-  // inc(x - 1, y - 1)
-  // }
+  const gameOver = (cellNum) => {
+    console.log('hi')
+  }
 
   return (
     <div>
       {fieldHeight.map((string, y) => {
-        // console.log(y)
         return (
           <div key={y} className={styles.string}>
             {fieldWidth.map((cell, x) => {
-              // console.log(field[y * width + x].value)
               return (
                 <div key={y * width + x}>
-                  {/* <div>{y * width + x}</div> */}
                   <Cell2
                     value={field[y * width + x].value}
-                    // cellNum={y * size + x}
+                    cellNum={y * width + x}
                     mine={mine}
-                    isVisible={field[y * width + x].visible}
+                    visible={field[y * width + x].visible}
+                    openCell={openCell}
+                    openZeroCell={openZeroCell}
+                    gameOver={gameOver}
                   />
                 </div>
               )
