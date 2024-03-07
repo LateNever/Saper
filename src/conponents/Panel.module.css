@@ -1,0 +1,13 @@
+.panel {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  /* background-color: aqua; */
+  border: 4mm ridge rgba(211, 220, 50, 0.6);
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-size: 30px;
+  color: rgb(0, 40, 75);
+}

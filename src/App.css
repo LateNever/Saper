@@ -1,3 +1,22 @@
 .App {
-  text-align: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* text-align: center; */
+  border: 4mm ridge rgba(211, 220, 50, 0.6);
+
+  font-family: 'Oxanium', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.frame {
+  display: inline-block;
+  /* text-align: center; */
+  padding: 20px;
+  background-color: rgb(228, 228, 228);
+  border: 4mm ridge rgba(211, 220, 50, 0.6);
 }
