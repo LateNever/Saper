@@ -4,9 +4,18 @@ import { ReactComponent as CloseBtn } from '../img/close.svg'
 import styles from './SettingsModal.module.css'
 
 function SettingsModal({ closeModal, changeField }) {
-  const [selected, setSelected] = useState('8x8')
-  const [manualWidth, setManualWidth] = useState()
-  const [manualHeight, setManualHeight] = useState()
+  const [manualWidth, setManualWidth] = useState(8)
+  const [manualHeight, setManualHeight] = useState(8)
+  const [manualMineQty, setManualMineQty] = useState(10)
+  const [selected, setSelected] = useState(`${manualWidth}x${manualHeight}`)
+
+  // const change = changeField(manualWidth, manualHeight)
+  const change = () => {
+    // console.log(manualHeight)
+    // console.log(manualHeight)
+    closeModal()
+    changeField(manualWidth, manualHeight, manualMineQty)
+  }
 
   return (
     <div className={styles.modalBack}>
@@ -27,8 +36,12 @@ function SettingsModal({ closeModal, changeField }) {
                 <label className={styles.modalLabel}>
                   <input
                     type="radio"
-                    checked={selected === '8x8'}
-                    onChange={() => setSelected('8x8')}
+                    checked={manualWidth === 8 && manualHeight === 8}
+                    onChange={() => {
+                      setManualWidth(8)
+                      setManualHeight(8)
+                      setManualMineQty(10)
+                    }}
                     className={styles.marker}
                   />
                   8x8
@@ -38,8 +51,12 @@ function SettingsModal({ closeModal, changeField }) {
                 <label className={styles.modalLabel}>
                   <input
                     type="radio"
-                    checked={selected === '16x16'}
-                    onChange={() => setSelected('16x16')}
+                    checked={manualWidth === 16 && manualHeight === 16}
+                    onChange={() => {
+                      setManualWidth(16)
+                      setManualHeight(16)
+                      setManualMineQty(40)
+                    }}
                     className={styles.marker}
                   />
                   16x16
@@ -49,14 +66,18 @@ function SettingsModal({ closeModal, changeField }) {
                 <label className={styles.modalLabel}>
                   <input
                     type="radio"
-                    checked={selected === '32x16'}
-                    onChange={() => setSelected('32x16')}
+                    checked={manualWidth === 32 && manualHeight === 16}
+                    onChange={() => {
+                      setManualWidth(32)
+                      setManualHeight(16)
+                      setManualMineQty(99)
+                    }}
                     className={styles.marker}
                   />
                   32x16
                 </label>
               </li>
-              <li className={styles.modalLi}>
+              {/* <li className={styles.modalLi}>
                 <label className={styles.manualLabel}>
                   <input
                     type="radio"
@@ -83,10 +104,12 @@ function SettingsModal({ closeModal, changeField }) {
                     }}
                   />
                 </label>
-              </li>
+              </li> */}
             </ul>
           </div>
-          <button className={styles.buttonOk}>OK</button>
+          <button className={styles.buttonOk} onClick={change}>
+            OK
+          </button>
         </div>
       </div>
     </div>

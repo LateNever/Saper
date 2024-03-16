@@ -5,8 +5,10 @@ import Cell2 from './Cell2'
 
 import styles from './Field2.module.css'
 
-function Field2({ width, height, mineAmt }) {
-  // const field = new Array(width * height).fill({ value: 0, visible: true })
+function Field2({ size, changeMineCounter, mineAmt }) {
+  console.log('Regen Field')
+  let width = size[0]
+  let height = size[1]
   const fieldWidth = new Array(width).fill(null)
   const fieldHeight = new Array(height).fill(null)
   const mine = -1
@@ -23,12 +25,9 @@ function Field2({ width, height, mineAmt }) {
   )
 
   const [notOver, setNotOver] = useState(true)
-  const [notWin, setNotWin] = useState(true)
+  // const [notWin, setNotWin] = useState(true)
 
   const changeAround = (fieldIn, cellNum, mod, self) => {
-    // console.log(cellNum)
-    // console.log(fieldIn)
-
     let fieldMod = [...fieldIn]
 
     const x = cellNum % width
@@ -36,9 +35,6 @@ function Field2({ width, height, mineAmt }) {
 
     const modFunc = (x, y) => {
       if (x >= 0 && x < width && y >= 0 && y < height) {
-        // console.log(y * width + x)
-        // mod(fieldMod[y * width + x])
-
         fieldMod = fieldMod.map((cell, item) => {
           return item === y * width + x
             ? mod(fieldMod[y * width + x])
@@ -66,19 +62,18 @@ function Field2({ width, height, mineAmt }) {
   }
 
   useEffect(() => {
+    console.log('Field effected')
     let fieldBomb = [...field]
 
-    for (let i = 0; i < mineAmt; ) {
+    for (let i = 0; i < size[2]; ) {
       const x = Math.floor(Math.random() * width)
       const y = Math.floor(Math.random() * height)
-      // console.log(y * width + x)
       if (fieldBomb[y * width + x].value === mine) continue
       fieldBomb = fieldBomb.map((cell, item) => {
         return item === y * width + x ? { ...cell, value: mine } : { ...cell }
       })
 
       const inc = (cell) => {
-        // console.log(cell.value)
         return cell.value === mine
           ? { ...cell }
           : { ...cell, value: cell.value + 1 }
@@ -92,22 +87,26 @@ function Field2({ width, height, mineAmt }) {
     setField([...fieldBomb])
   }, [])
 
+  const show = (cell) => {
+    return !cell.marked ? { ...cell, visible: true } : { ...cell }
+  }
+
   const openCell = (cellNum) => {
     let openField = field.map((cell, item) => {
       return item === cellNum ? { ...cell, visible: true } : { ...cell }
     })
     // пока не разобрался как решить вопрос с асинхронностью useState, дклаю проверку по временному массиву
-    checkWin(openField)
-    // setNotWin(
-    //   !!openField.find((item) => item.value !== mine && item.visible === false)
-    // )
+    console.log(checkWin(openField))
+
+    if (checkWin(openField)) {
+      openField = openField.map((cell, item) => {
+        return cell.value === mine ? { ...cell, marked: true } : { ...cell }
+      })
+      setNotOver(false)
+      changeMineCounter(0)
+    }
 
     setField(openField)
-  }
-
-  const show = (cell) => {
-    // console.log(cell.value)
-    return !cell.marked ? { ...cell, visible: true } : { ...cell }
   }
 
   const openZeroCell = (cellNum) => {
@@ -125,10 +124,13 @@ function Field2({ width, height, mineAmt }) {
           (zeroField = changeAround(zeroField, item, show, true))
       })
     }
-    checkWin(zeroField)
-    // setNotWin(
-    //   !!zeroField.find((item) => item.value !== mine && item.visible === false)
-    // )
+    if (checkWin(zeroField)) {
+      zeroField = zeroField.map((cell, item) => {
+        return cell.value === mine ? { ...cell, marked: true } : { ...cell }
+      })
+      setNotOver(false)
+      changeMineCounter(0)
+    }
 
     setField([...zeroField])
     // пока не разобрался как решить вопрос с асинхронностью useState, дклаю проверку по временному массиву
@@ -153,13 +155,15 @@ function Field2({ width, height, mineAmt }) {
 
   const markCell = (cellNum) => {
     console.log('mark')
-    setField(
-      field.map((cell, item) => {
-        return item === cellNum
-          ? { ...cell, marked: !cell.marked }
-          : { ...cell }
-      })
-    )
+
+    let markField = field.map((cell, item) => {
+      return item === cellNum && !cell.visible
+        ? { ...cell, marked: !cell.marked }
+        : { ...cell }
+    })
+    let markedQty = size[2] - markField.filter((cell) => cell.marked).length
+    changeMineCounter(markedQty)
+    setField(markField)
   }
 
   const checkWin = (field) => {
@@ -167,10 +171,7 @@ function Field2({ width, height, mineAmt }) {
     const isWin = !!field.find(
       (item) => item.value !== mine && item.visible === false
     )
-    if (!isWin) {
-      setNotOver(false)
-    }
-    setNotWin(isWin)
+    return !isWin
   }
 
   return (
