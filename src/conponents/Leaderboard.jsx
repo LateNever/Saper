@@ -1,15 +1,7 @@
 import { useState } from 'react'
 import styles from './Leaderboard.module.css'
 
-function Leaderboard() {
-  const [leaders, setLeaders] = useState(
-    new Array(10).fill({
-      no: 0,
-      name: 'none',
-      score: 'none',
-    })
-  )
-
+function Leaderboard({ leaderBoardArr }) {
   return (
     <div>
       <table className={styles.leaderTable}>
@@ -18,12 +10,12 @@ function Leaderboard() {
           <td className={styles.leaderTd}>Name</td>
           <td className={styles.leaderTd}>Score</td>
         </tr>
-        {leaders.map((gamer, i) => {
+        {leaderBoardArr.map((gamer, i) => {
           return (
             <tr>
               <td className={styles.leaderTd}>{i + 1}</td>
               <td className={styles.leaderTd}>{gamer.name}</td>
-              <td className={styles.leaderTd}>{gamer.score}</td>
+              <td className={styles.leaderTd}>{gamer.time}</td>
             </tr>
           )
         })}

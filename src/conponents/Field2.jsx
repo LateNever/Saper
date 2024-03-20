@@ -5,8 +5,15 @@ import Cell2 from './Cell2'
 
 import styles from './Field2.module.css'
 
-function Field2({ size, changeMineCounter, mineAmt }) {
-  console.log('Regen Field')
+function Field2({
+  size,
+  changeMineCounter,
+  mineAmt,
+  startTimer,
+  stopTimer,
+  openNameModal,
+}) {
+  // console.log('Regen Field')
   let width = size[0]
   let height = size[1]
   const fieldWidth = new Array(width).fill(null)
@@ -25,6 +32,8 @@ function Field2({ size, changeMineCounter, mineAmt }) {
   )
 
   const [notOver, setNotOver] = useState(true)
+
+  const [isTimer, setIsTimer] = useState(false)
   // const [notWin, setNotWin] = useState(true)
 
   const changeAround = (fieldIn, cellNum, mod, self) => {
@@ -62,7 +71,7 @@ function Field2({ size, changeMineCounter, mineAmt }) {
   }
 
   useEffect(() => {
-    console.log('Field effected')
+    // console.log('Field effected')
     let fieldBomb = [...field]
 
     for (let i = 0; i < size[2]; ) {
@@ -92,24 +101,39 @@ function Field2({ size, changeMineCounter, mineAmt }) {
   }
 
   const openCell = (cellNum) => {
+    if (!isTimer) {
+      setIsTimer(true)
+      const startDate = new Date()
+      const unixTime = Math.floor(startDate.getTime() / 1000)
+      startTimer(unixTime)
+    }
     let openField = field.map((cell, item) => {
       return item === cellNum ? { ...cell, visible: true } : { ...cell }
     })
-    // пока не разобрался как решить вопрос с асинхронностью useState, дклаю проверку по временному массиву
+    // пока не разобрался как решить вопрос с асинхронностью useState, делаю проверку по временному массиву
     console.log(checkWin(openField))
 
     if (checkWin(openField)) {
       openField = openField.map((cell, item) => {
         return cell.value === mine ? { ...cell, marked: true } : { ...cell }
       })
+      stopTimer()
       setNotOver(false)
       changeMineCounter(0)
+      openNameModal()
     }
 
     setField(openField)
   }
 
   const openZeroCell = (cellNum) => {
+    if (!isTimer) {
+      setIsTimer(true)
+      const currentDate = new Date()
+      const unixTime = Math.floor(currentDate.getTime() / 1000)
+      startTimer(unixTime)
+    }
+
     let zeroField = changeAround(field, cellNum, show, true)
 
     while (
@@ -128,8 +152,10 @@ function Field2({ size, changeMineCounter, mineAmt }) {
       zeroField = zeroField.map((cell, item) => {
         return cell.value === mine ? { ...cell, marked: true } : { ...cell }
       })
+      stopTimer()
       setNotOver(false)
       changeMineCounter(0)
+      openNameModal()
     }
 
     setField([...zeroField])
@@ -151,6 +177,7 @@ function Field2({ size, changeMineCounter, mineAmt }) {
       })
     )
     setNotOver(false)
+    stopTimer()
   }
 
   const markCell = (cellNum) => {
@@ -167,7 +194,7 @@ function Field2({ size, changeMineCounter, mineAmt }) {
   }
 
   const checkWin = (field) => {
-    console.log('check win')
+    // console.log('check win')
     const isWin = !!field.find(
       (item) => item.value !== mine && item.visible === false
     )

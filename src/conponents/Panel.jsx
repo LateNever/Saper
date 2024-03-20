@@ -10,7 +10,7 @@ import styles from './Panel.module.css'
 function Panel({ openModal, restart, mineAmt, timer }) {
   return (
     <div className={styles.panel}>
-      <h3>{`${timer / 1000}`.padStart(3, '0')}</h3>
+      <h3>{`${timer}`.padStart(3, '0')}</h3>
       <Button onClick={openModal}>
         <Settings />
       </Button>

@@ -5,55 +5,32 @@ import PageApp from './conponents/PageApp.jsx'
 import Leaderboard from './conponents/Leaderboard.jsx'
 
 function App() {
-  // const [modal, setModal] = useState(false)
-  // const [key, setKey] = useState(100)
-  // // const [width, setWidth] = useState(8)
-  // // const [height, setHeight] = useState(8)
-  // const [size, setSize] = useState([8, 8])
+  const [leaderBoardArr, setLeaderBoardArr] = useState([])
 
-  // const openModal = () => {
-  //   setModal(true)
-  // }
-
-  // const closeModal = () => {
-  //   setModal(false)
-  // }
-
-  // const changeField = (width, height) => {
-  //   // setWidth(width)
-  //   // setHeight(height)
-  //   setSize([width, height])
-  //   setKey((oldKey) => oldKey + 1)
-  // }
-
-  // const restartField = (width, height) => {
-  //   // setWidth(width)
-  //   // setHeight(height)
-  //   // setSize([width, height])
-  //   setKey((oldKey) => oldKey + 1)
-  // }
+  const createLeaderBoardArr = (name, time) => {
+    let boardArr = [...leaderBoardArr, { name: name, time: time }].sort(
+      (a, b) => {
+        if (a.time < b.time) return -1
+      }
+    )
+    if (boardArr.length > 10) boardArr.length = 10
+    setLeaderBoardArr(boardArr)
+    console.log(leaderBoardArr)
+  }
 
   return (
     <div className="App">
       <Link to="/">Home</Link>
       <Routes>
-        <Route path="/" element={<PageApp />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-      </Routes>
-      {/* <Link to="/f">Home</Link>
-      <div className="frame">
-        <Panel openModal={openModal} restart={restartField} />
-        <Field2 key={key} size={size} mineAmt={5} />
-        {modal && (
-          <SettingsModal closeModal={closeModal} changeField={changeField} />
-        )}
-      </div>
-      <Routes>
         <Route
-          path="/f"
-          element={<Field2 key={key} size={size} mineAmt={5} />}
+          path="/"
+          element={<PageApp createLeaderBoardArr={createLeaderBoardArr} />}
         />
-      </Routes> */}
+        <Route
+          path="/leaderboard"
+          element={<Leaderboard leaderBoardArr={leaderBoardArr} />}
+        />
+      </Routes>
     </div>
   )
 }

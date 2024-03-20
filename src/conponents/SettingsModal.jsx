@@ -7,6 +7,7 @@ function SettingsModal({ closeModal, changeField }) {
   const [manualWidth, setManualWidth] = useState(8)
   const [manualHeight, setManualHeight] = useState(8)
   const [manualMineQty, setManualMineQty] = useState(10)
+  const [manualTime, setManualTime] = useState(30)
   const [selected, setSelected] = useState(`${manualWidth}x${manualHeight}`)
 
   // const change = changeField(manualWidth, manualHeight)
@@ -14,7 +15,7 @@ function SettingsModal({ closeModal, changeField }) {
     // console.log(manualHeight)
     // console.log(manualHeight)
     closeModal()
-    changeField(manualWidth, manualHeight, manualMineQty)
+    changeField(manualWidth, manualHeight, manualMineQty, manualTime)
   }
 
   return (
@@ -41,6 +42,7 @@ function SettingsModal({ closeModal, changeField }) {
                       setManualWidth(8)
                       setManualHeight(8)
                       setManualMineQty(10)
+                      setManualTime(600)
                     }}
                     className={styles.marker}
                   />
@@ -56,6 +58,7 @@ function SettingsModal({ closeModal, changeField }) {
                       setManualWidth(16)
                       setManualHeight(16)
                       setManualMineQty(40)
+                      setManualTime(2400)
                     }}
                     className={styles.marker}
                   />
@@ -71,6 +74,7 @@ function SettingsModal({ closeModal, changeField }) {
                       setManualWidth(32)
                       setManualHeight(16)
                       setManualMineQty(99)
+                      setManualTime(6000)
                     }}
                     className={styles.marker}
                   />
