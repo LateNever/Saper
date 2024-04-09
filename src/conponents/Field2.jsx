@@ -12,13 +12,14 @@ function Field2({
   startTimer,
   stopTimer,
   openNameModal,
+  changeGameState,
 }) {
   // console.log('Regen Field')
-  let width = size[0]
-  let height = size[1]
+  const width = size[0]
+  const height = size[1]
+  const mine = -1
   const fieldWidth = new Array(width).fill(null)
   const fieldHeight = new Array(height).fill(null)
-  const mine = -1
 
   const [field, setField] = useState(
     new Array(width * height).fill({
@@ -71,7 +72,7 @@ function Field2({
   }
 
   useEffect(() => {
-    // console.log('Field effected')
+    console.log('Field effected')
     let fieldBomb = [...field]
 
     for (let i = 0; i < size[2]; ) {
@@ -111,7 +112,6 @@ function Field2({
       return item === cellNum ? { ...cell, visible: true } : { ...cell }
     })
     // пока не разобрался как решить вопрос с асинхронностью useState, делаю проверку по временному массиву
-    console.log(checkWin(openField))
 
     if (checkWin(openField)) {
       openField = openField.map((cell, item) => {
@@ -177,12 +177,11 @@ function Field2({
       })
     )
     setNotOver(false)
+    changeGameState(-1)
     stopTimer()
   }
 
   const markCell = (cellNum) => {
-    console.log('mark')
-
     let markField = field.map((cell, item) => {
       return item === cellNum && !cell.visible
         ? { ...cell, marked: !cell.marked }

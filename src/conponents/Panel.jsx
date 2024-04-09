@@ -7,7 +7,7 @@ import { ReactComponent as Cool } from '../img/cool.svg'
 import Button from './UI/Button'
 import styles from './Panel.module.css'
 
-function Panel({ openModal, restart, mineAmt, timer }) {
+function Panel({ openModal, restart, mineAmt, timer, gameState }) {
   return (
     <div className={styles.panel}>
       <h3>{`${timer}`.padStart(3, '0')}</h3>
@@ -16,7 +16,7 @@ function Panel({ openModal, restart, mineAmt, timer }) {
       </Button>
 
       <Button onClick={restart}>
-        <Smile />
+        {gameState < 0 ? <Dead /> : gameState === 0 ? <Smile /> : <Cool />}
       </Button>
 
       <Link to="/leaderboard">

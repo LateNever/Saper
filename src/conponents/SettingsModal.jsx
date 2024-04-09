@@ -3,28 +3,26 @@ import Button from './UI/Button'
 import { ReactComponent as CloseBtn } from '../img/close.svg'
 import styles from './SettingsModal.module.css'
 
-function SettingsModal({ closeModal, changeField }) {
-  const [manualWidth, setManualWidth] = useState(8)
-  const [manualHeight, setManualHeight] = useState(8)
-  const [manualMineQty, setManualMineQty] = useState(10)
-  const [manualTime, setManualTime] = useState(30)
+function SettingsModal({ size, closeModal, changeField }) {
+  const [manualWidth, setManualWidth] = useState(size[0])
+  const [manualHeight, setManualHeight] = useState(size[1])
+  const [manualMineQty, setManualMineQty] = useState(size[2])
+  const [manualTime, setManualTime] = useState(size[3])
   const [selected, setSelected] = useState(`${manualWidth}x${manualHeight}`)
 
-  // const change = changeField(manualWidth, manualHeight)
   const change = () => {
-    // console.log(manualHeight)
-    // console.log(manualHeight)
     closeModal()
-    changeField(manualWidth, manualHeight, manualMineQty, manualTime)
+    if (
+      size[0] !== manualWidth ||
+      size[1] !== manualHeight ||
+      size[2] !== manualMineQty ||
+      size[3] !== manualTime
+    )
+      changeField([manualWidth, manualHeight, manualMineQty, manualTime])
   }
 
   return (
     <div className={styles.modalBack}>
-      {/* <img
-        className={styles.closeIcon}
-        src="../img/close_btn.svg"
-        onClick={() => closeModal()}
-      /> */}
       <div className={styles.modal}>
         <div className={styles.closeContainer}>
           <CloseBtn className={styles.closeIcon} onClick={closeModal} />

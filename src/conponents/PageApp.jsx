@@ -1,42 +1,40 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { setLeaders } from '../redux/slices/leaderboardSlice'
 import styles from './PageApp.module.css'
 import Field2 from './Field2'
 import Panel from './Panel'
 import SettingsModal from './SettingsModal'
 import EnterNameModal from './EnterNameModal'
 
-function PageApp({ createLeaderBoardArr }) {
+function PageApp() {
   const [modal, setModal] = useState(false)
   const [nameModal, setNameModal] = useState(false)
   const [key, setKey] = useState(100)
-  // const [width, setWidth] = useState(8)
-  // const [height, setHeight] = useState(8)
-  const [size, setSize] = useState([8, 8, 9, 600])
+  const [size, setSize] = useState([8, 8, 2, 600])
   const [mineAmt, setMineAmt] = useState(size[2])
   const [timer, setTimer] = useState(size[3])
   const [timerInterval, setTimerInterval] = useState(null)
-  // const [winnerList, setWinnerList] = useState([])
+  const [gameState, setGameState] = useState(0)
 
   const changeMineCounter = (mineQty) => setMineAmt(mineQty)
 
-  // const changeTimer = (timerValue) => setTimer(timerValue)
   const startTimer = (unixTime) => {
     setTimerInterval(
       setInterval(() => {
-        const currentDate = new Date()
-        const currentTime = Math.floor(currentDate.getTime() / 1000)
+        const currentTime = Math.floor(Date.now() / 1000)
         setTimer(size[3] - (currentTime - unixTime))
       }, 1000)
     )
-    // console.log(timerInterval)
   }
-  // const stopTimer = () => window.clearInterval(timerInterval)
   const stopTimer = () => {
     clearInterval(timerInterval)
-    // setNameModal(true)
   }
 
+  const changeGameState = (state) => setGameState(state)
+
   const openNameModal = () => {
+    changeGameState(1)
     setNameModal(true)
   }
 
@@ -52,16 +50,15 @@ function PageApp({ createLeaderBoardArr }) {
     setModal(false)
   }
 
+  const dispatch = useDispatch()
+
   const createWinnerList = (name) => {
-    createLeaderBoardArr(name, size[3] - timer)
-    // console.log(winnerList)
-    // createLeaderBoardArr()
+    dispatch(setLeaders({ name: name, time: timer }))
   }
 
-  const changeField = (width, height, mineQty, time) => {
-    setSize([width, height, mineQty, time])
+  const changeField = (size) => {
+    setSize(size)
     setKey((oldKey) => oldKey + 1)
-    setMineAmt(size[2])
     restartField()
   }
 
@@ -70,7 +67,14 @@ function PageApp({ createLeaderBoardArr }) {
     setMineAmt(size[2])
     stopTimer()
     setTimer(size[3])
+    setGameState(0)
   }
+
+  useEffect(() => {
+    // Обновляем mineAmt при изменении size
+    setMineAmt(size[2])
+    setTimer(size[3])
+  }, [size])
 
   return (
     <div className={styles.frame}>
@@ -79,6 +83,7 @@ function PageApp({ createLeaderBoardArr }) {
         restart={restartField}
         mineAmt={mineAmt}
         timer={timer}
+        gameState={gameState}
       />
       <Field2
         key={key}
@@ -88,9 +93,14 @@ function PageApp({ createLeaderBoardArr }) {
         startTimer={startTimer}
         stopTimer={stopTimer}
         openNameModal={openNameModal}
+        changeGameState={changeGameState}
       />
       {modal && (
-        <SettingsModal closeModal={closeModal} changeField={changeField} />
+        <SettingsModal
+          size={size}
+          closeModal={closeModal}
+          changeField={changeField}
+        />
       )}
       {nameModal && (
         <EnterNameModal

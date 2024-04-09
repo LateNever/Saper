@@ -42,6 +42,8 @@ function Cell({
     // checkWin()
   }
 
+  // console.log(styles.numbers + 10000)
+
   return (
     <div
       className={styles.cell + ' ' + (notOver && styles.cellHover)}
@@ -59,7 +61,14 @@ function Cell({
           ) : value === mine ? (
             <Bomb className={styles.bomb} />
           ) : (
-            <h1 className={styles.numbers}>{value}</h1>
+            <h1
+              className={
+                // let name = styles.numbers + 10000,
+                styles.numbers + ' ' + styles['numbers' + value]
+              }
+            >
+              {value}
+            </h1>
           )}
         </div>
       )}

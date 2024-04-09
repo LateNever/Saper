@@ -4,8 +4,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 25px;
   /* text-align: center; */
-  border: 4mm ridge rgba(211, 220, 50, 0.6);
 
   font-family: 'Oxanium', sans-serif;
   font-optical-sizing: auto;
