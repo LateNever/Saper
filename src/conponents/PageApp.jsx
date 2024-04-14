@@ -11,7 +11,7 @@ function PageApp() {
   const [modal, setModal] = useState(false)
   const [nameModal, setNameModal] = useState(false)
   const [key, setKey] = useState(100)
-  const [size, setSize] = useState([8, 8, 2, 600])
+  const [size, setSize] = useState([8, 8, 5, 600])
   const [mineAmt, setMineAmt] = useState(size[2])
   const [timer, setTimer] = useState(size[3])
   const [timerInterval, setTimerInterval] = useState(null)

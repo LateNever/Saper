@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { setField } from '../redux/slices/fieldSlice'
 
 import Cell2 from './Cell2'
 
@@ -14,7 +16,10 @@ function Field2({
   openNameModal,
   changeGameState,
 }) {
+  const fieldRedux = useSelector((state) => state.fieldSlice)
+  const dispatch = useDispatch()
   // console.log('Regen Field')
+
   const width = size[0]
   const height = size[1]
   const mine = -1
@@ -37,6 +42,7 @@ function Field2({
   const [isTimer, setIsTimer] = useState(false)
   // const [notWin, setNotWin] = useState(true)
 
+  // Функция изменяющие клетки вокруг целевой
   const changeAround = (fieldIn, cellNum, mod, self) => {
     let fieldMod = [...fieldIn]
 
@@ -71,9 +77,29 @@ function Field2({
     return [...fieldMod]
   }
 
+  // Функция генерации поля с расстановкой бомб
   useEffect(() => {
     console.log('Field effected')
     let fieldBomb = [...field]
+
+    // Оптимизированная функция генерации поля
+    // -------------------------------------------
+
+    let fieldBombTEST = [...field]
+
+    const bombIndexSet = new Set()
+
+    while (bombIndexSet.size < size[2]) {
+      bombIndexSet.add(Math.floor(Math.random() * width * height))
+    }
+
+    const bombIndexArr = Array.from(bombIndexSet)
+
+    bombIndexArr.forEach((item) => {
+      fieldBombTEST[item] = { ...fieldBombTEST[item], value: mine }
+    })
+
+    // -------------------------------------------
 
     for (let i = 0; i < size[2]; ) {
       const x = Math.floor(Math.random() * width)
@@ -95,12 +121,14 @@ function Field2({
     }
 
     setField([...fieldBomb])
+    dispatch(setField(fieldBomb))
   }, [])
 
   const show = (cell) => {
     return !cell.marked ? { ...cell, visible: true } : { ...cell }
   }
 
+  // Функция открытия клетки
   const openCell = (cellNum) => {
     if (!isTimer) {
       setIsTimer(true)
@@ -126,6 +154,7 @@ function Field2({
     setField(openField)
   }
 
+  // Открытие пустой клетки которая инициирует открытие соседних клеток
   const openZeroCell = (cellNum) => {
     if (!isTimer) {
       setIsTimer(true)
@@ -162,6 +191,7 @@ function Field2({
     // пока не разобрался как решить вопрос с асинхронностью useState, дклаю проверку по временному массиву
   }
 
+  // Функция окончания игры
   const gameOver = (cellNum) => {
     let overField = field.map((cell, item) => {
       return item === cellNum ? { ...cell, exploded: true } : { ...cell }
@@ -181,6 +211,7 @@ function Field2({
     stopTimer()
   }
 
+  // Отметка флажком клетки
   const markCell = (cellNum) => {
     let markField = field.map((cell, item) => {
       return item === cellNum && !cell.visible
@@ -192,8 +223,8 @@ function Field2({
     setField(markField)
   }
 
+  // Проверка поля на окончание игры
   const checkWin = (field) => {
-    // console.log('check win')
     const isWin = !!field.find(
       (item) => item.value !== mine && item.visible === false
     )
